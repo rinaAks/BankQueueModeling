@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,7 +14,7 @@ namespace lab14BankModeling
     // Агенты: Клиенты (Clients), Очередь (Queue), Операторы (Employees), Банк - управляющий агент
     public partial class Form1 : Form
     {
-        bool buttonValue;
+        public static bool buttonValue;
         private void Form1_Load(object sender, EventArgs e)
         {
             buttonValue = true;
@@ -51,6 +52,7 @@ namespace lab14BankModeling
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            /*
             nextClientTime = ExpRV(3);
             if (servingClientsN > 0)
             {
@@ -85,11 +87,14 @@ namespace lab14BankModeling
                 }
                 time += servingEndTime;
             }
+            */
+
+            Modeling.Run();
 
             lbQueueClients.Text = queueClientsN.ToString();
             lbServingClients.Text = servingClientsN.ToString();
 
-            chart1.Series[0].Points.AddXY(time, servingClientsN);
+            chart1.Series[0].Points.AddXY(Modeling.Time, servingClientsN);
         }
 
         private void btStop_Click(object sender, EventArgs e)
