@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace lab14BankModeling
 {
-    // Агенты: Клиенты (Clients), Очередь (Queue), Операторы (Employees), Банк - управляющий агент
+    // Агенты из лекции: Клиенты (Clients), Очередь (Queue), Операторы (Employees), Банк - управляющий агент
     public partial class Form1 : Form
     {
         public static bool buttonValue;
@@ -27,7 +27,6 @@ namespace lab14BankModeling
 
         int operatorsN, queueClientsN, servingClientsN;
         double nextClientTime, servingEndTime;
-        double time;
 
         Random rnd = new Random(); //от 0 до 1
         private void btStart_Click(object sender, EventArgs e)
@@ -35,7 +34,6 @@ namespace lab14BankModeling
             chart1.Series[0].Points.Clear();
             queueClientsN = 0;
             servingClientsN = 0;
-            time = 0;
 
             buttonValue = true;
 
@@ -43,8 +41,13 @@ namespace lab14BankModeling
             chart1.ChartAreas[0].Axes[1].Maximum = operatorsN + 1;
 
 
-            
+            //...
+            Modeling.operators = operatorsN;
 
+            Modeling.people = 0;
+            Modeling.ReRun();
+            servingClientsN = Modeling.getBusyOperatorsCount();
+            //___
 
             timer1.Start();
 
@@ -91,10 +94,26 @@ namespace lab14BankModeling
 
             Modeling.Run();
 
+            servingClientsN = Modeling.getBusyOperatorsCount();
+            queueClientsN = Modeling.queueCount();
+            double time = -Modeling.Time;
+
             lbQueueClients.Text = queueClientsN.ToString();
             lbServingClients.Text = servingClientsN.ToString();
-
-            chart1.Series[0].Points.AddXY(Modeling.Time, servingClientsN);
+            //chart1.Series[0].Points.AddXY(time, servingClientsN);
+            
+            if (servingClientsN < Modeling.getBusyOperatorsCount())
+            {
+                chart1.Series[0].Points.AddXY(time, servingClientsN);
+                servingClientsN++;
+                chart1.Series[0].Points.AddXY(time, servingClientsN);
+            }
+            else
+            {
+                chart1.Series[0].Points.AddXY(time, servingClientsN);
+                servingClientsN--;
+                chart1.Series[0].Points.AddXY(time, servingClientsN);
+            }
         }
 
         private void btStop_Click(object sender, EventArgs e)
